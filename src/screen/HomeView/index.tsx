@@ -2,9 +2,6 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import React from 'react';
 
-// src/views/HomeView.tsx
-
-
 const HomeView: React.FC = () => {
   return (
     <View style={styles.container}>

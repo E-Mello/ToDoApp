@@ -1,9 +1,8 @@
-import Routes from './src/routes';
+import DrawerNavigator from './src/components/DrawerNavigator';
+import React from 'react';
 
-export default function App() {
-  return (
-    <Routes />
-    );
-}
+const App: React.FC = () => {
+  return <DrawerNavigator />;
+};
 
-// https://youtu.be/Inj0XKS6-KY
+export default App;
