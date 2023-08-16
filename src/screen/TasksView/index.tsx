@@ -90,37 +90,50 @@ const TasksView: React.FC = () => {
       </View>
 
       <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{editingTask ? 'Editar Tarefa' : 'Nova Tarefa'}</Text>
-            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
-              <Feather name="x" size={24} color="#333" />
-            </TouchableOpacity>
+  animationType="slide"
+  transparent={true}
+  visible={modalVisible}
+  onRequestClose={() => setModalVisible(false)}
+>
+  <View style={styles.modalContainer}>
+    <View style={styles.modalContent}>
+      <Text style={styles.modalTitle}>{editingTask ? 'Editar Tarefa' : 'Nova Tarefa'}</Text>
+      <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+        <Feather name="x" size={24} color="#333" />
+      </TouchableOpacity>
 
-            {/* Conteúdo do Modal */}
-            <Text>Título:</Text>
-            <TextInput
-              value={editingTask ? editingTask.title : newTaskTitle}
-              onChangeText={text => setEditingTask(editingTask ? { ...editingTask, title: text } : null)}
-              style={styles.input}
-            />
-            <Text>Descrição:</Text>
-            <TextInput
-              value={editingTask ? editingTask.description : newTaskDescription}
-              onChangeText={text => setEditingTask(editingTask ? { ...editingTask, description: text } : null)}
-              style={styles.input}
-            />
+      {/* Conteúdo do Modal */}
+      <Text>Título:</Text>
+      <TextInput
+        value={editingTask ? editingTask.title : newTaskTitle}
+        onChangeText={text => {
+          if (editingTask) {
+            setEditingTask({ ...editingTask, title: text });
+          } else {
+            setNewTaskTitle(text);
+          }
+        }}
+        style={styles.input}
+      />
+      <Text>Descrição:</Text>
+      <TextInput
+        value={editingTask ? editingTask.description : newTaskDescription}
+        onChangeText={text => {
+          if (editingTask) {
+            setEditingTask({ ...editingTask, description: text });
+          } else {
+            setNewTaskDescription(text);
+          }
+        }}
+        style={styles.input}
+      />
 
-            <Button title="Cancelar" onPress={() => setModalVisible(false)} />
-            <Button title={editingTask ? 'Salvar Edição' : 'Criar Tarefa'} onPress={editingTask ? saveEditedTask : createTask} />
-          </View>
-        </View>
-      </Modal>
+      <Button title="Cancelar" onPress={() => setModalVisible(false)} />
+      <Button title={editingTask ? 'Salvar Edição' : 'Criar Tarefa'} onPress={editingTask ? saveEditedTask : createTask} />
+    </View>
+  </View>
+</Modal>
+
     </View>
   );
 };
