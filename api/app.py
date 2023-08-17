@@ -3,7 +3,8 @@ from flask_cors import CORS  # Importe o módulo CORS
 import mysql.connector
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Permite todas as origens
+CORS(app, resources={r"/*": {"origins": "*"}},
+     methods=["GET", "POST", "PUT", "DELETE"])  # Permite todas as origens
 
 # Configurações do banco de dados
 db_config = {
@@ -36,8 +37,39 @@ def create_task():
     cursor.close()
     return jsonify({'message': 'Task created successfully'})
 
-# Outros endpoints para atualizar e excluir tarefas
+
+@app.route('/tasks/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+    print(f"Updating task {task_id}")
+    try:
+        title = request.json['title']
+        description = request.json['description']
+
+        cursor = mysql.cursor()
+        cursor.execute('UPDATE tasks SET title = %s, description = %s WHERE id = %s',
+                       (title, description, task_id))
+        mysql.commit()
+        cursor.close()
+
+        return jsonify({'message': 'Task updated successfully'})
+    except Exception as e:
+        print(f"Error updating task: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    try:
+        cursor = mysql.cursor()
+        cursor.execute('DELETE FROM tasks WHERE id = %s', (task_id,))
+        mysql.commit()
+        cursor.close()
+
+        return jsonify({'message': 'Task deleted successfully'})
+    except Exception as e:
+        print(f"Error deleting task: {e}")
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':
-    app.run(host='172.16.60.55', port=5000, debug=True)
+    app.run(host='192.168.1.115', port=5000, debug=True)

@@ -1,21 +1,22 @@
-import { Button, Modal, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, StatusBar, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
-import { Feather } from '@expo/vector-icons';
-import { styles } from './styles'; // Importe o estilo do novo arquivo
+import TaskItem from './TaskItem';
+import TaskModal from './TaskModal';
+import { styles } from './styles';
 
 const TasksView: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [tasks, setTasks] = useState<{ id: number; title: string; description: string }[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
-
   const [editingTask, setEditingTask] = useState<{ id: number; title: string; description: string } | null>(null);
 
   const fetchTasks = async () => {
     try {
-      const response = await fetch('http://172.16.60.55:5000/tasks'); // Altere a URL da sua API aqui
+      const response = await fetch('http://192.168.1.115:5000/tasks');
       const data = await response.json();
+      console.log('Fetched tasks:', data);
       setTasks(data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -25,15 +26,6 @@ const TasksView: React.FC = () => {
   useEffect(() => {
     fetchTasks();
   }, []);
-
-
-  const getRandomColor = () => {
-    const red = Math.floor(Math.random() * 256);
-    const green = Math.floor(Math.random() * 256);
-    const blue = Math.floor(Math.random() * 256);
-    return `rgb(${red},${green},${blue})`;
-  };
-
 
   const editTask = (task: any) => {
     setEditingTask(task);
@@ -49,10 +41,11 @@ const TasksView: React.FC = () => {
     setNewTaskDescription('');
   };
 
+
   const createTask = async () => {
     if (newTaskTitle) {
       try {
-        const response = await fetch('http://172.16.60.55:5000/tasks', {
+        const response = await fetch('http://192.168.1.115:5000/tasks', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -72,17 +65,71 @@ const TasksView: React.FC = () => {
 
   const saveEditedTask = async () => {
     if (editingTask) {
-      //
+      try {
+        console.log('Updating task:', editingTask.id);
+
+        const response = await fetch(`http://192.168.1.115:5000/tasks/${editingTask.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: newTaskTitle,
+            description: newTaskDescription,
+          }),
+        });
+
+        if (response.ok) {
+          await fetchTasks();
+          closeAndClearModal();
+          window.alert(`Tarefa atualizada com sucesso! ${newTaskTitle} ${newTaskDescription}`);
+
+          console.log('Task updated successfully');
+        } else {
+          console.error('Task update failed:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error updating task:', error);
+      }
     }
   };
 
   const deleteTask = async (taskId: number) => {
     try {
-      // Implementar a lógica de exclusão da tarefa aqui
+      const response = await fetch(`http://192.168.1.115:5000/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // Atualiza a lista de tarefas após a exclusão
+        await fetchTasks();
+      } else {
+        console.error('Task deletion failed:', response.statusText);
+      }
     } catch (error) {
-      console.error('Erro ao excluir tarefa:', error);
+      console.error('Error deleting task:', error);
     }
   };
+
+  const handleTitleChange = (text: string) => {
+    if (editingTask) {
+      setEditingTask({ ...editingTask, title: text });
+    } else {
+      setNewTaskTitle(text);
+    }
+  };
+
+  const handleDescriptionChange = (text: string) => {
+    if (editingTask) {
+      setEditingTask({ ...editingTask, description: text });
+    } else {
+      setNewTaskDescription(text);
+    }
+  };
+
 
   const renderTasks = () => {
     if (tasks.length === 0) {
@@ -90,26 +137,13 @@ const TasksView: React.FC = () => {
     }
 
     return tasks.map(task => (
-      <View key={task.id} style={[styles.taskContainer, { backgroundColor: getRandomColor() }]}>
-        <Text style={styles.taskTitle}>{task.title}</Text>
-        <Text style={styles.taskDescription}>{task.description}</Text>
-        <View style={styles.taskButtons}>
-          <TouchableOpacity onPress={() => editTask(task)}>
-            <Feather name="edit" size={20} color="#333" style={styles.icon} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => viewTask(task)}>
-            <Feather name="eye" size={20} color="#333" style={styles.icon} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => deleteTask(task.id)}>
-            <Feather name="trash-2" size={20} color="#333" style={styles.icon} />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <TaskItem
+        key={task.id}
+        task={task}
+        editTask={editTask}
+        deleteTask={deleteTask}
+      />
     ));
-  };
-
-  const viewTask = (task: any) => {
-    // Implementar a lógica de visualização da tarefa aqui
   };
 
   return (
@@ -122,58 +156,17 @@ const TasksView: React.FC = () => {
         {renderTasks()}
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={closeAndClearModal}
-        style={styles.modal}
-      >
-        <View style={styles.modalContainer}>
-          <StatusBar translucent backgroundColor="rgba(0, 0, 0, 0.5)" />
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{editingTask ? 'Editar Tarefa' : 'Nova Tarefa'}</Text>
-            <TouchableOpacity onPress={closeAndClearModal} style={styles.closeButton}>
-              <Feather name="x" size={24} color="#333" />
-            </TouchableOpacity>
-
-            {/* Conteúdo do Modal */}
-            <Text>Título:</Text>
-            <TextInput
-              value={editingTask ? editingTask.title : newTaskTitle}
-              onChangeText={text => {
-                if (editingTask) {
-                  setEditingTask({ ...editingTask, title: text });
-                } else {
-                  setNewTaskTitle(text);
-                }
-              }}
-              style={styles.input}
-            />
-            <Text>Descrição:</Text>
-            <TextInput
-              value={editingTask ? editingTask.description : newTaskDescription}
-              onChangeText={text => {
-                if (editingTask) {
-                  setEditingTask({ ...editingTask, description: text });
-                } else {
-                  setNewTaskDescription(text);
-                }
-              }}
-              style={styles.input}
-            />
-            <View style={styles.modalButtons}>
-              <Button title="Cancelar" onPress={closeAndClearModal} />
-              <Button title={editingTask ? 'Salvar Edição' : 'Criar Tarefa'} onPress={editingTask ? saveEditedTask : createTask} />
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <TaskModal
+        modalVisible={modalVisible}
+        editingTask={editingTask}
+        newTaskTitle={newTaskTitle}
+        newTaskDescription={newTaskDescription}
+        closeAndClearModal={closeAndClearModal}
+        saveTask={editingTask ? saveEditedTask : createTask}
+      />
 
     </View>
   );
 };
 
 export default TasksView;
-
-
