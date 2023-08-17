@@ -2,11 +2,10 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    padding: 2,
-    width: "100%",
-    height: "100%",
+    padding: 5,
+  },
+  modal: {
+    paddingTop: 30,
   },
   title: {
     fontSize: 24,
@@ -26,16 +25,15 @@ export const styles = StyleSheet.create({
   taskContainer: {
     marginBottom: 20,
     paddingHorizontal: 20,
-    flex: 1,
-    width: 140,
-    height: 140,
+    backgroundColor: '#fff',
+    height: 100,
+    gap: 2,
+    borderWidth: 1,
+    borderRadius: 8,
   },
   renderTasks: {
-    flex: 10,
-    columnGap: 20,
     justifyContent: 'flex-start',
-    width: "100%",
-    height: "90%",
+    top: 0,
   },
   taskTitle: {
     fontSize: 18,
@@ -46,11 +44,9 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   newTaskButton: {
-    flex: 1,
     alignItems: 'center',
-    width: "100%",
-    height: "10%",
     paddingTop: 10,
+    paddingBottom: 10,
   },
   taskButtons: {
     flexDirection: 'row',
@@ -67,11 +63,13 @@ export const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 20,
+    width: 350,
+    height: 290,
     borderRadius: 8,
-    width: '80%',
+    padding: 20,
   },
   modalTitle: {
+    textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 16,
@@ -87,5 +85,11 @@ export const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     borderRadius: 4,
+  },
+  modalButtons: {
+    paddingTop: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
