@@ -163,8 +163,10 @@ const TasksView: React.FC = () => {
         newTaskDescription={newTaskDescription}
         closeAndClearModal={closeAndClearModal}
         saveTask={editingTask ? saveEditedTask : createTask}
+        setNewTaskTitle={setNewTaskTitle}
+        setNewTaskDescription={setNewTaskDescription}
+        setEditingTask={setEditingTask}
       />
-
     </View>
   );
 };

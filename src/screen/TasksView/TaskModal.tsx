@@ -11,6 +11,9 @@ interface TaskModalProps {
     newTaskDescription: string;
     closeAndClearModal: () => void;
     saveTask: () => void;
+    setEditingTask: (task: { id: number; title: string; description: string } | null) => void;
+    setNewTaskTitle: (title: string) => void;
+    setNewTaskDescription: (description: string) => void;
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({
@@ -20,6 +23,9 @@ const TaskModal: React.FC<TaskModalProps> = ({
     newTaskDescription,
     closeAndClearModal,
     saveTask,
+    setEditingTask,
+    setNewTaskTitle,
+    setNewTaskDescription,
 }) => {
     return (
         <Modal
@@ -43,21 +49,23 @@ const TaskModal: React.FC<TaskModalProps> = ({
                         value={editingTask ? editingTask.title : newTaskTitle}
                         onChangeText={text => {
                             if (editingTask) {
-                                editingTask.title = text;
+                                const updatedTask = { ...editingTask, title: text };
+                                setEditingTask(updatedTask);
                             } else {
-                                newTaskTitle = text;
+                                setNewTaskTitle(text);
                             }
                         }}
                         style={styles.input}
                     />
-                    <Text>Descrição:</Text>
+
                     <TextInput
                         value={editingTask ? editingTask.description : newTaskDescription}
                         onChangeText={text => {
                             if (editingTask) {
-                                editingTask.description = text;
+                                const updatedTask = { ...editingTask, description: text };
+                                setEditingTask(updatedTask);
                             } else {
-                                newTaskDescription = text;
+                                setNewTaskDescription(text);
                             }
                         }}
                         style={styles.input}
