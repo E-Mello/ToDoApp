@@ -1,6 +1,27 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  editButton: {
+    backgroundColor: '#3498db',
+    padding: 8,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  deleteButton: {
+    backgroundColor: '#e74c3c',
+    padding: 8,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  saveButton: {
+    backgroundColor: '#2ecc71',
+    padding: 8,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 4,
+  },
   container: {
     padding: 5,
   },
@@ -30,6 +51,9 @@ export const styles = StyleSheet.create({
     gap: 2,
     borderWidth: 1,
     borderRadius: 8,
+  },
+  scrollRenderTasks: {
+    marginBottom: 50,
   },
   renderTasks: {
     justifyContent: 'flex-start',

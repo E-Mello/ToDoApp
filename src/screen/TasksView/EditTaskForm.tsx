@@ -3,8 +3,9 @@ import { Button, Modal, TextInput, View } from 'react-native';
 import React from 'react';
 import { styles } from './styles';
 
-interface TaskModalProps {
+interface EditTaskFormProps {
     modalVisible: boolean;
+    editingTask: { id: number; title: string; description: string } | null;
     newTaskTitle: string;
     newTaskDescription: string;
     closeAndClearModal: () => void;
@@ -14,8 +15,9 @@ interface TaskModalProps {
     setEditingTask: (task: { id: number; title: string; description: string } | null) => void;
 }
 
-const TaskModal: React.FC<TaskModalProps> = ({
+const EditTaskForm: React.FC<EditTaskFormProps> = ({
     modalVisible,
+    editingTask,
     newTaskTitle,
     newTaskDescription,
     closeAndClearModal,
@@ -51,4 +53,4 @@ const TaskModal: React.FC<TaskModalProps> = ({
     );
 };
 
-export default TaskModal;
+export default EditTaskForm;
