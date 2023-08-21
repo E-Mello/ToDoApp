@@ -1,8 +1,8 @@
 import { Button, ScrollView, StatusBar, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 
-import EditTaskForm from './EditTaskForm'; // Importe o componente EditTaskForm
 import TaskItem from './TaskItem';
+import TaskModal from './TaskModal';
 import { styles } from './styles';
 
 const TasksView: React.FC = () => {
@@ -96,34 +96,6 @@ const TasksView: React.FC = () => {
             console.error('Error deleting task:', error);
           }
         }}
-        saveEditedTask={async () => {
-          if (editingTask) {
-            try {
-              console.log('Updating task:', editingTask.id);
-
-              const response = await fetch(`http://192.168.1.115:5000/tasks/${editingTask.id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  title: newTaskTitle,
-                  description: newTaskDescription,
-                }),
-              });
-
-              if (response.ok) {
-                await fetchTasks();
-                closeAndClearModal();
-                console.log('Task updated successfully');
-              } else {
-                console.error('Task update failed:', response.statusText);
-              }
-            } catch (error) {
-              console.error('Error updating task:', error);
-            }
-          }
-        }}
       />
     ));
   };
@@ -161,7 +133,7 @@ const TasksView: React.FC = () => {
         </View>
       </ScrollView>
 
-      <EditTaskForm
+      <TaskModal
         modalVisible={modalVisible}
         editingTask={editingTask}
         newTaskTitle={newTaskTitle}

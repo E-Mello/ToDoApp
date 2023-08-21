@@ -1,29 +1,41 @@
+import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-import React from 'react';
-import { styles } from './styles';
+import TaskDetailsModal from './TaskDetailsModal'; // Importe o novo componente
+import { styles } from './stylesTaskItem';
 
 interface TaskItemProps {
     task: { id: number; title: string; description: string };
     editTask: () => void;
     deleteTask: () => void;
-    saveEditedTask: () => void; // Adicione esta propriedade
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task, editTask, deleteTask, saveEditedTask }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task, editTask, deleteTask }) => {
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const openModal = () => {
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+
     return (
         <View style={styles.taskContainer}>
             <Text style={styles.taskTitle}>{task.title}</Text>
-            <Text style={styles.taskDescription}>{task.description}</Text>
-            <TouchableOpacity onPress={editTask} style={styles.editButton}>
-                <Text>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={deleteTask} style={styles.deleteButton}>
-                <Text>Delete</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={saveEditedTask} style={styles.saveButton}>
-                <Text>Save</Text>
-            </TouchableOpacity>
+            <View style={styles.taskItemGroupButton}>
+                <TouchableOpacity onPress={editTask} style={{ ...styles.editButton, ...styles.taskItemButton }}>
+                    <Text>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteTask} style={{ ...styles.deleteButton, ...styles.taskItemButton }}>
+                    <Text>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={openModal} style={{ ...styles.viewButton, ...styles.taskItemButton }}>
+                    <Text>View Details</Text>
+                </TouchableOpacity>
+            </View>
+            <TaskDetailsModal visible={modalVisible} task={task} onClose={closeModal} />
         </View>
     );
 };

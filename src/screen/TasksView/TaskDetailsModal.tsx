@@ -1,31 +1,30 @@
 import { Modal, Text, TouchableOpacity, View } from 'react-native';
 
-import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { styles } from './styles';
+import { styles } from './stylesTaskDetailsModal'; // Certifique-se de ter os estilos corretos
 
 interface TaskDetailsModalProps {
-    task: { id: number; title: string; description: string };
     visible: boolean;
+    task: { id: number; title: string; description: string };
     onClose: () => void;
 }
 
-const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, visible, onClose }) => {
+const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ visible, task, onClose }) => {
     return (
         <Modal
             animationType="slide"
             transparent={true}
             visible={visible}
             onRequestClose={onClose}
-            style={styles.modal}
+            statusBarTranslucent={true}
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <Text style={styles.modalTitle}>{task.title}</Text>
+                    <Text style={styles.modalDescription}>{task.description}</Text>
                     <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                        <Feather name="x" size={24} color="#333" />
+                        <Text>Close</Text>
                     </TouchableOpacity>
-                    <Text style={styles.taskDescription}>{task.description}</Text>
                 </View>
             </View>
         </Modal>
