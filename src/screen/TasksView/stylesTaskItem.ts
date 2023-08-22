@@ -2,42 +2,60 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
     taskContainer: {
-        marginBottom: 20,
-        paddingHorizontal: 20,
-        backgroundColor: '#fff',
-        height: 100,
-        gap: 2,
-        borderWidth: 1,
-        borderRadius: 8,
-        alignItems: 'center',
-        padding: 10,
-      },
-      taskTitle: {
-        fontSize: 18,
+        backgroundColor: '#ffffff',
+        padding: 15,
+        marginVertical: 10,
+        borderRadius: 5,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3,
+    },
+    taskContainerCompleted: {
+        backgroundColor: '#e0e0e0',
+        padding: 15,
+        marginVertical: 10,
+        borderRadius: 5,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3,
+    },
+    taskTitle: {
+        fontSize: 16,
         fontWeight: 'bold',
-        paddingBottom: 8,
-      },
-      taskItemGroupButton: {
+        marginBottom: 5,
+    },
+    taskTitleCompleted: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        textDecorationLine: 'line-through',
+    },
+    taskItemGroupButton: {
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '100%',
-        rowGap: 10,
-        flexDirection: 'row',
-      },
-      editButton: {
-        backgroundColor: '#3498db',
-      },
-      deleteButton: {
-        backgroundColor: '#e74c3c',
-      },
-      viewButton: {
-        backgroundColor: '#2ecc71',
-      },
-      taskItemButton: {
-        width: 100,
-        padding: 8,
-        borderRadius: 4,
-        marginTop: 4,
-        alignItems: 'center',
-      },
+        marginTop: 10,
+    },
+    button: {
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 3,
+        borderColor: '#ccc',
+        borderWidth: 1,
+    },
+    buttonText: {
+        fontSize: 14,
+    },
+    editButton: {
+        marginRight: 5,
+    },
+    deleteButton: {
+        marginRight: 5,
+    },
+    completeButton: {
+        marginRight: 5,
+    },
+    viewButton: {},
 });

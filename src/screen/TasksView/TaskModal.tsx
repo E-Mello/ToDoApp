@@ -1,30 +1,34 @@
-import { Button, Modal, SafeAreaView, SafeAreaViewComponent, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import React from 'react';
 import { styles } from './stylesTaskModal';
 
 interface TaskModalProps {
     modalVisible: boolean;
-    editingTask: { id: number; title: string; description: string } | null;
+    editingTaskId: string | null; // Alterado para string | null
     newTaskTitle: string;
     newTaskDescription: string;
     closeAndClearModal: () => void;
     saveTask: () => void;
     setNewTaskTitle: (text: string) => void;
     setNewTaskDescription: (text: string) => void;
-    setEditingTask: (task: { id: number; title: string; description: string } | null) => void;
+    setEditingTaskId: string | null;
+    handleEditTask: (newTitle: string, newDescription: string) => void;
+    createTask: (title: string, description: string) => void;
 }
 
 const TaskModal: React.FC<TaskModalProps> = ({
     modalVisible,
-    editingTask,
+    editingTaskId,
     newTaskTitle,
     newTaskDescription,
     closeAndClearModal,
     saveTask,
     setNewTaskTitle,
     setNewTaskDescription,
-    setEditingTask,
+    setEditingTaskId,
+    handleEditTask,
+    createTask,
 }) => {
     return (
         <Modal
@@ -53,7 +57,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                     </View>
                     <View style={styles.modalFooter}>
                         <View style={styles.modalButtonGroup}>
-                            <TouchableOpacity onPress={saveTask} style={{ ...styles.modalButton, ...styles.modalButtonSave }}>
+                            <TouchableOpacity onPress={editingTaskId ? () => handleEditTask(newTaskTitle, newTaskDescription) : () => createTask(newTaskTitle, newTaskDescription)} style={{ ...styles.modalButton, ...styles.modalButtonSave }}>
                                 <Text>Save</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={closeAndClearModal} style={{ ...styles.modalButton, ...styles.modalButtonCancel }}>
@@ -63,7 +67,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
                     </View>
                 </View>
             </View>
-        </Modal >
+        </Modal>
     );
 };
 

@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   },
 
   scrollRenderTasks: {
-    marginBottom: 50,
+    marginBottom: 87,
   },
   renderTasks: {
     justifyContent: 'flex-start',

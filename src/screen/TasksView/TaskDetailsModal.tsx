@@ -1,11 +1,11 @@
 import { Modal, Text, TouchableOpacity, View } from 'react-native';
 
 import React from 'react';
-import { styles } from './stylesTaskDetailsModal'; // Certifique-se de ter os estilos corretos
+import { styles } from './stylesTaskDetailsModal';
 
 interface TaskDetailsModalProps {
     visible: boolean;
-    task: { id: number; title: string; description: string };
+    task: { id: string; title: string; description: string };
     onClose: () => void;
 }
 
