@@ -23,26 +23,34 @@ def get_tasks():
     cursor = mysql.cursor(dictionary=True)
 
     if show_completed == 'true':
-        cursor.execute('SELECT * FROM tasks')
+        cursor.execute('SELECT * FROM tasks WHERE completed = true')
     else:
         cursor.execute('SELECT * FROM tasks WHERE completed = false')
 
     tasks = cursor.fetchall()
     cursor.close()
+
+    # Convert the completed field to boolean
+    for task in tasks:
+        task['completed'] = bool(task['completed'])
+
     return jsonify(tasks)
 
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
-    title = request.json['title']
-    description = request.json['description']
-    task_id = str(uuid.uuid4())  # Gerar UUID
-    cursor = mysql.cursor()
-    cursor.execute(
-        'INSERT INTO tasks (id, title, description) VALUES (%s, %s, %s)', (task_id, title, description))
-    mysql.commit()
-    cursor.close()
-    return jsonify({'message': 'Task created successfully'})
+    try:
+        title = request.json['title']
+        description = request.json['description']
+        task_id = str(uuid.uuid4())  # Gerar UUID
+        cursor = mysql.cursor()
+        cursor.execute(
+            'INSERT INTO tasks (id, title, description) VALUES (%s, %s, %s)', (task_id, title, description))
+        mysql.commit()
+        cursor.close()
+        return jsonify({'message': 'Task created successfully'})
+    except Exception as e:
+        return jsonify({'error': 'Failed to create task', 'details': str(e)}), 500
 
 
 @app.route('/tasks/<string:task_id>', methods=['PUT'])

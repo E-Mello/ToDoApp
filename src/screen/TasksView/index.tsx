@@ -21,27 +21,69 @@ const TasksView: React.FC = () => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
 
+
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  useEffect(() => {
+    // Atualiza as tarefas sempre que o estado showCompleted mudar
+    filterTasksToShow();
+    fetchTasks();
+  }, [showCompleted]);
 
-  const closeAndClearModal = () => {
-    setModalVisible(false);
-    setEditingTaskId(null); // Limpar o ID de edição
-    setNewTaskTitle(''); // Limpar o título
-    setNewTaskDescription(''); // Limpar a descrição
+  const filterTasksToShow = () => {
+    let tasksToRender: Task[];
+
+    if (showCompleted) {
+      tasksToRender = tasks.filter(task => task.completed);
+    } else {
+      tasksToRender = tasks.filter(task => !task.completed);
+    }
+
+    return tasksToRender;
   };
 
+
   const fetchTasks = async () => {
+    console.log(showCompleted)
+    let completeState = (JSON.stringify(showCompleted)).toString();
+    console.log("Complete state string", completeState);
     try {
-      const response = await fetch('http://192.168.1.115:5000/tasks');
+      const response = await fetch(`http://192.168.1.115:5000/tasks?show_completed=${completeState}`);
       const data = await response.json();
       setTasks(data);
+      console.log('Tasks fetched successfully:', data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
   };
+
+
+  const renderTasks = () => {
+    const renderFilteredTasks = filterTasksToShow();
+
+    if (renderFilteredTasks.length === 0) {
+      return <View style={styles.noneTasks}><Text>Nenhuma tarefa cadastrada.</Text></View>;
+    }
+
+    return renderFilteredTasks.map(task => (
+      <TaskItem
+        key={task.id}
+        task={task}
+        editTask={() => {
+          setEditingTaskId(task.id);
+          setNewTaskTitle(task.title);
+          setNewTaskDescription(task.description);
+          setModalVisible(true);
+        }}
+        deleteTask={() => handleDeleteTask(task.id)}
+        toggleTaskCompletion={() => toggleTaskCompletion(task.id)}
+      />
+    ));
+  };
+
+
 
   const toggleTaskCompletion = async (taskId: String) => {
     try {
@@ -149,31 +191,6 @@ const TasksView: React.FC = () => {
     }
   };
 
-  const renderTasks = () => {
-    let tasksToRender = tasks.filter(task => showCompleted ? task.completed : !task.completed);
-
-    if (tasksToRender.length === 0) {
-      return <View style={styles.noneTasks}><Text>Nenhuma tarefa cadastrada.</Text></View>;
-    }
-
-    return tasksToRender.map(task => (
-      <TaskItem
-        key={task.id}
-        task={task}
-        editTask={() => {
-          setEditingTaskId(task.id);
-          setNewTaskTitle(task.title);
-          setNewTaskDescription(task.description);
-          setModalVisible(true);
-        }}
-        deleteTask={() => handleDeleteTask(task.id)}
-        toggleTaskCompletion={() => toggleTaskCompletion(task.id)}
-      />
-    ));
-
-
-  };
-
   const openModal = () => {
     setModalVisible(true);
   };
@@ -182,12 +199,22 @@ const TasksView: React.FC = () => {
     setModalVisible(false);
   };
 
+  const closeAndClearModal = () => {
+    setModalVisible(false);
+    setEditingTaskId(null); // Limpar o ID de edição
+    setNewTaskTitle(''); // Limpar o título
+    setNewTaskDescription(''); // Limpar a descrição
+  };
+
   return (
     <View style={styles.container}>
       <Button
         title={showCompleted ? 'Mostrar tarefas pendentes' : 'Mostrar tarefas concluídas'}
-        onPress={() => setShowCompleted(!showCompleted)}
+        onPress={() => {
+          setShowCompleted(!showCompleted);
+        }}
       />
+
 
       <View style={styles.newTaskButton}>
         <Button title="Nova Tarefa" onPress={openModal} />

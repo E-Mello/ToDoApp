@@ -12,7 +12,7 @@ interface TaskModalProps {
     saveTask: () => void;
     setNewTaskTitle: (text: string) => void;
     setNewTaskDescription: (text: string) => void;
-    setEditingTaskId: string | null;
+    setEditingTaskId: React.Dispatch<React.SetStateAction<string | null>>;
     handleEditTask: (newTitle: string, newDescription: string) => void;
     createTask: (title: string, description: string) => void;
 }
