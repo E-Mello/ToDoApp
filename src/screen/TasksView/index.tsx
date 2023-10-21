@@ -50,7 +50,7 @@ const TasksView: React.FC = () => {
     let completeState = (JSON.stringify(showCompleted)).toString();
     console.log("Complete state string", completeState);
     try {
-      const response = await fetch(`http://192.168.1.115:5000/tasks?show_completed=${completeState}`);
+      const response = await fetch(`http://192.168.0.15:5000/tasks?show_completed=${completeState}`);
       const data = await response.json();
       setTasks(data);
       console.log('Tasks fetched successfully:', data);
@@ -92,7 +92,7 @@ const TasksView: React.FC = () => {
       if (taskToUpdate) {
         const updatedTask = { ...taskToUpdate, completed: !taskToUpdate.completed };
 
-        const response = await fetch(`http://192.168.1.115:5000/tasks/${taskId}`, {
+        const response = await fetch(`http://192.168.0.15:5000/tasks/${taskId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const TasksView: React.FC = () => {
   const createTask = async () => {
     if (newTaskTitle) {
       try {
-        const response = await fetch('http://192.168.1.115:5000/tasks', {
+        const response = await fetch('http://192.168.0.15:5000/tasks', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ const TasksView: React.FC = () => {
 
   const handleDeleteTask = async (taskId: string) => {
     try {
-      const response = await fetch(`http://192.168.1.115:5000/tasks/${taskId}`, {
+      const response = await fetch(`http://192.168.0.15:5000/tasks/${taskId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -168,7 +168,7 @@ const TasksView: React.FC = () => {
           description: newDescription,
         };
 
-        const response = await fetch(`http://192.168.1.115:5000/tasks/${editingTaskId}`, {
+        const response = await fetch(`http://192.168.0.15:5000/tasks/${editingTaskId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

@@ -2,16 +2,26 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 import uuid
+import os
+from dotenv import load_dotenv
+
+# funcao para carregar as variaveis ambientes
+load_dotenv()
+
+host = os.getenv('DB_HOST')
+user = os.getenv('DB_USER')
+password = os.getenv('DB_PASSWORD')
+database = os.getenv('DB_DATABASE')
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}},
      methods=["GET", "POST", "PUT", "DELETE"])
 
 db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'abc123#4',
-    'database': 'todoApp'
+    'host': host,
+    'user': user,
+    'password': password,
+    'database': database,
 }
 
 mysql = mysql.connector.connect(**db_config)
@@ -85,4 +95,4 @@ def delete_task(task_id):
 
 
 if __name__ == '__main__':
-    app.run(host='192.168.1.115', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
